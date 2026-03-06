@@ -1,0 +1,98 @@
+\documentclass{ctexart}
+\pagestyle{empty} % 禁用页眉页脚，包括页码
+\setlength{\parindent}{2em}
+\usepackage[
+  paperwidth=17cm,
+  paperheight=25cm,
+  margin=6pt
+]{geometry}
+\usepackage{titlesec}
+
+% 修改 \section 字号为 14pt，加粗
+\titleformat{\section}
+  {\normalfont\bfseries\large} % 样式：\Large 可改为 \huge, \small 等
+  {\thesection}{0em}{}         % 编号和间距设置
+  \titlespacing{\section}{0pt}{10pt}{0pt}
+
+\usepackage{multicol}  
+\usepackage{amsmath}   
+
+
+\begin{document}
+\section*{Dormand-Prince RK45 方法}
+
+Dormand-Prince法是一种可以自适应调整积分步长的显式Runge-Kutta方法，其同时估计4阶解与5阶解，其Butcher表如下：
+\vspace{-3pt}
+\[
+    \begin{array}{c|ccccccc}
+        c_i       & a_{i1}     & a_{i2}      & a_{i3}     & a_{i4}   & a_{i5}        & a_{i6}   & a_{i7} \\
+        \hline
+        0         &            &             &            &          &               &          &        \\
+        1/5       & 1/5        &             &            &          &               &          &        \\
+        3/10      & 3/40       & 9/40        &            &          &               &          &        \\
+        4/5       & 44/45      & -56/15      & 32/9       &          &               &          &        \\
+        8/9       & 19372/6561 & -25360/2187 & 64448/6561 & -212/729 &               &          &        \\
+        1         & 9017/3168  & -355/33     & 46732/5247 & 49/176   & -5103/18656   &          &        \\
+        1         & 35/384     & 0           & 500/1113   & 125/192  & -2187/6784    & 11/84    & 0      \\
+        \hline
+        b_i       & 35/384     & 0           & 500/1113   & 125/192  & -2187/6784    & 11/84    & 0      \\
+        \hat{b}_i & 5179/57600 & 0           & 7571/16695 & 393/640  & -92097/339200 & 187/2100 & 1/40
+    \end{array}
+\]
+
+RK45 的更新公式可统一写为：
+\[
+    \begin{aligned}
+        k_i                        & = f\Big(t_n + c_i h,\, \boldsymbol{s}_n + h \sum_{j=1}^{i-1} a_{ij} k_j \Big), \quad i=1,\dots,7, \\
+        \boldsymbol{s}_{n+1}^{(5)} & = \boldsymbol{s}_n + h \sum_{i=1}^{7} \hat{b}_i k_i,\quad
+        \boldsymbol{s}_{n+1}^{(4)} = \boldsymbol{s}_n + h \sum_{i=1}^{7} b_i k_i                                                       \\
+    \end{aligned}
+\]
+
+
+设$\varepsilon$为相对误差限，可使用下式对积分步长进行自适应调整：
+\[
+    h_{\text{new}} = \left(\frac{\varepsilon h}{2\left|\boldsymbol{s}_{n+1}^{(5)}-\boldsymbol{s}_{n+1}^{(4)}\right|}\right)^{1/5}
+\]
+\rule{\linewidth}{0.4pt}
+\begin{multicols}{2}
+    \section*{二维弹跳小球状态空间模型}
+
+    定义状态向量
+    \begin{equation*}
+        \boldsymbol{s} =
+        \begin{bmatrix}
+            x \\ y \\ v_x \\ v_y
+        \end{bmatrix},
+        \quad
+        \dot{\boldsymbol{s}} =
+        \begin{bmatrix}
+            v_x \\ v_y \\ 0 \\ -g
+        \end{bmatrix}
+    \end{equation*}
+    其中 $g$ 为重力加速度.
+
+    \section*{碰撞模型（恢复系数）}
+
+    记$e \in [0,1]$ 为恢复系数，碰撞时状态更新：
+    \[
+        v_y^+ = -e\, v_y^-
+    \]
+
+    \section*{碰撞模型（弹簧阻尼）}
+
+    接触地面时竖直力：
+    \[
+        F_y = -k\,y - c\,v_y,
+    \]
+
+    状态空间表示：
+    \[
+        \dot{\boldsymbol{s}} =
+        \begin{bmatrix}
+            v_x \\ v_y \\ 0 \\ -g + F_y/m
+        \end{bmatrix}, \quad y \le 0
+    \]
+\end{multicols}
+
+\end{document}
