@@ -1,0 +1,49 @@
+\documentclass{ctexart}
+\pagestyle{empty} % 禁用页眉页脚，包括页码
+\setlength{\parindent}{2em}
+\usepackage[
+  paperwidth=17cm,
+  paperheight=25cm,
+  margin=6pt
+]{geometry}
+\usepackage{titlesec}
+
+% 修改 \section 字号为 14pt，加粗
+\titleformat{\section}
+  {\normalfont\bfseries\large} % 样式：\Large 可改为 \huge, \small 等
+  {\thesection}{0em}{}         % 编号和间距设置
+  \titlespacing{\section}{0pt}{10pt}{0pt}
+
+\usepackage{multicol}  
+\usepackage{amsmath}   
+
+\begin{document}
+
+
+\section*{二连杆末端的雅克比矩阵}
+
+考虑平面二连杆机械臂，其连杆长度分别为 $l_1$ 和 $l_2$，关节角为 $\theta_1$ 和 $\theta_2$。末端在世界坐标系中的位置为
+\begin{align*}
+    x & = l_1 \cos\theta_1 + l_2 \cos(\theta_1+\theta_2) \\
+    y & = l_1 \sin\theta_1 + l_2 \sin(\theta_1+\theta_2)
+\end{align*}
+
+雅克比矩阵定义为末端位置对关节变量的偏导矩阵：
+
+\begin{equation*}
+    J(\theta)=
+    \begin{bmatrix}
+        \frac{\partial x}{\partial \theta_1} & \frac{\partial x}{\partial \theta_2} \\
+        \frac{\partial y}{\partial \theta_1} & \frac{\partial y}{\partial \theta_2}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        -l_1\sin\theta_1 - l_2\sin(\theta_1+\theta_2) &
+        -l_2\sin(\theta_1+\theta_2)                     \\
+        l_1\cos\theta_1 + l_2\cos(\theta_1+\theta_2)  &
+        l_2\cos(\theta_1+\theta_2)
+    \end{bmatrix}
+\end{equation*}
+
+
+\end{document}

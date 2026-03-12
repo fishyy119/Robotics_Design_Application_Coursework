@@ -8,7 +8,7 @@ function fig = createFigureA4(params)
 
 % 默认值
 defaults.Name = "";
-defaults.Width = 18;
+defaults.Width = 9;
 defaults.AspectRatio = 2/3;
 
 % 合并结构体，缺省字段使用默认值
