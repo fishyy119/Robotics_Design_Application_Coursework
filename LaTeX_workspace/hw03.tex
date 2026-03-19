@@ -15,35 +15,85 @@
   \titlespacing{\section}{0pt}{10pt}{0pt}
 
 \usepackage{multicol}  
-\usepackage{amsmath}   
+\usepackage{amsmath} 
+\usepackage{amssymb}  
 
 \begin{document}
 
 
 \section*{二连杆末端的雅克比矩阵}
 
-考虑平面二连杆机械臂，其连杆长度分别为 $l_1$ 和 $l_2$，关节角为 $\theta_1$ 和 $\theta_2$。末端在世界坐标系中的位置为
+考虑一个平面二连杆机械臂，其连杆长度分别为 $l_1$ 和 $l_2$，关节角为 $\theta_1$ 和 $\theta_2$。定义简写如下
+\[
+  c_1 := \cos\theta_1, \quad s_1 := \sin\theta_1, \quad
+  c_{12} := \cos(\theta_1+\theta_2), \quad s_{12} := \sin(\theta_1+\theta_2).
+\]
+末端执行器在笛卡尔坐标系中的位置可表示为：
 \begin{align*}
-    x & = l_1 \cos\theta_1 + l_2 \cos(\theta_1+\theta_2) \\
-    y & = l_1 \sin\theta_1 + l_2 \sin(\theta_1+\theta_2)
+  \boldsymbol{p} = \begin{bmatrix} x \\ y \end{bmatrix} =
+  \begin{bmatrix} l_1 s_1 + l_2 s_{12} \\ -\,l_1 c_1 - l_2 c_{12} \end{bmatrix}
 \end{align*}
 
-雅克比矩阵定义为末端位置对关节变量的偏导矩阵：
+末端位置对关节角的雅可比矩阵为：
 
 \begin{equation*}
-    J(\theta)=
-    \begin{bmatrix}
-        \frac{\partial x}{\partial \theta_1} & \frac{\partial x}{\partial \theta_2} \\
-        \frac{\partial y}{\partial \theta_1} & \frac{\partial y}{\partial \theta_2}
-    \end{bmatrix}
-    =
-    \begin{bmatrix}
-        -l_1\sin\theta_1 - l_2\sin(\theta_1+\theta_2) &
-        -l_2\sin(\theta_1+\theta_2)                     \\
-        l_1\cos\theta_1 + l_2\cos(\theta_1+\theta_2)  &
-        l_2\cos(\theta_1+\theta_2)
-    \end{bmatrix}
+  \boldsymbol{J}(\boldsymbol{\theta}) =
+  \begin{bmatrix}
+    \dfrac{\partial x}{\partial \theta_1} & \dfrac{\partial x}{\partial \theta_2} \\
+    \dfrac{\partial y}{\partial \theta_1} & \dfrac{\partial y}{\partial \theta_2}
+  \end{bmatrix}=
+  \begin{bmatrix}
+    l_1 c_1 + l_2 c_{12} & l_2 c_{12} \\
+    l_1 s_1 + l_2 s_{12} & l_2 s_{12}
+  \end{bmatrix}
 \end{equation*}
 
+\section*{二连杆末端速度校验}
+
+设关节角向量为 $\boldsymbol{\dot{\theta}} = [\dot{\theta}_1, \dot{\theta}_2]^\mathrm{T}$，则末端线速度可由雅可比矩阵直接求得：
+\begin{equation*}
+  \boldsymbol{v} = \boldsymbol{J}(\boldsymbol{\theta})\, \boldsymbol{\dot{\theta}}
+\end{equation*}
+
+展开矩阵乘法可得：
+\begin{equation*}
+  \boldsymbol{v} =
+  \begin{bmatrix}
+    (l_1 c_1 + l_2 c_{12}) \dot{\theta}_1 + l_2 c_{12} \dot{\theta}_2 \\
+    (l_1 s_1 + l_2 s_{12}) \dot{\theta}_1 + (l_2 s_{12}) \dot{\theta}_2
+  \end{bmatrix}
+\end{equation*}
+
+
+\section*{二连杆末端的加速度分析}
+
+设关节角加速度为 $\boldsymbol{\ddot{\theta}} = [\ddot{\theta}_1, \ddot{\theta}_2]^\mathrm{T}$，对末端速度求时间导数，可得末端线加速度：
+\begin{equation*}
+  \boldsymbol{a} = \dot{\boldsymbol{v}} = \frac{\mathrm{d}}{\mathrm{d}t}\left(\boldsymbol{J}(\boldsymbol{\theta})\, \boldsymbol{\dot{\theta}}\right)
+  = \dot{\boldsymbol{J}}(\boldsymbol{\theta}, \boldsymbol{\dot{\theta}})\, \boldsymbol{\dot{\theta}} + \boldsymbol{J}(\boldsymbol{\theta})\, \boldsymbol{\ddot{\theta}}
+\end{equation*}
+
+其中 $\dot{\boldsymbol{J}}(\boldsymbol{\theta}, \boldsymbol{\dot{\theta}})$ 表示雅可比矩阵的时间导数，其元素为：
+\begin{align*}
+  \dot{\boldsymbol{J}}(\boldsymbol{\theta}, \boldsymbol{\dot{\theta}}) =
+  \begin{bmatrix}
+    -\,l_1 s_1 \, \dot{\theta}_1 - l_2 s_{12} (\dot{\theta}_1+\dot{\theta}_2) & -\,l_2 s_{12} (\dot{\theta}_1+\dot{\theta}_2) \\
+    l_1 c_1 \, \dot{\theta}_1 + l_2 c_{12} (\dot{\theta}_1+\dot{\theta}_2)    & l_2 c_{12} (\dot{\theta}_1+\dot{\theta}_2)
+  \end{bmatrix}
+\end{align*}
+
+因此，末端线加速度可写成：
+\begin{equation*}
+  \boldsymbol{a} =
+  \begin{bmatrix}
+    -\,l_1 s_1 \dot{\theta}_1 - l_2 s_{12} (\dot{\theta}_1+\dot{\theta}_2) & -\,l_2 s_{12} (\dot{\theta}_1+\dot{\theta}_2) \\
+    l_1 c_1 \dot{\theta}_1 + l_2 c_{12} (\dot{\theta}_1+\dot{\theta}_2)    & l_2 c_{12} (\dot{\theta}_1+\dot{\theta}_2)
+  \end{bmatrix} \boldsymbol{\dot{\theta}}
+  +
+  \begin{bmatrix}
+    l_1 c_1 + l_2 c_{12} & l_2 c_{12} \\
+    l_1 s_1 + l_2 s_{12} & l_2 s_{12}
+  \end{bmatrix} \boldsymbol{\ddot{\theta}}
+\end{equation*}
 
 \end{document}
