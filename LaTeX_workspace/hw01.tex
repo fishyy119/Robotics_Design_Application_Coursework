@@ -52,7 +52,7 @@ RK45 的更新公式可统一写为：
 
 设$\varepsilon$为相对误差限，可使用下式对积分步长进行自适应调整：
 \[
-    h_{\text{new}} = \left(\frac{\varepsilon h}{2\left|\boldsymbol{s}_{n+1}^{(5)}-\boldsymbol{s}_{n+1}^{(4)}\right|}\right)^{1/5}
+    h_{\text{new}} = h\cdot\left(\frac{\varepsilon h}{2\left|\boldsymbol{s}_{n+1}^{(5)}-\boldsymbol{s}_{n+1}^{(4)}\right|}\right)^{1/5}
 \]
 \rule{\linewidth}{0.4pt}
 \begin{multicols}{2}
