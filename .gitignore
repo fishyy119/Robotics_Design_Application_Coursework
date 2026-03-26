@@ -5,3 +5,7 @@
 # LaTeX
 
 build/
+
+# Others
+
+*.mp4
