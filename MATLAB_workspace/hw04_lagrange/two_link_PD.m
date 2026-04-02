@@ -5,7 +5,6 @@
 clearvars;
 close all;
 clc;
-
 %% ---------------- 参数 ----------------
 m1 = 1;
 m2 = 1;
@@ -14,20 +13,17 @@ model.L2 = 0.5;
 l1 = model.L1;
 l2 = model.L2;
 g = 9.81;
-
 %% 初始条件
 q1 = -pi / 2;
 u1 = 0;
 q2 = 0;
 u2 = 0.0001;
 z0 = [q1; u1; q2; u2];
-
 %% 时间设置
 T = 8;
 dt = 0.05;
 tspan = 0:dt:T;
 fs = 1 / dt;
-
 %% ---------------- PD 控制参数 ----------------
 Kp = diag([500, 500]);
 Kd = diag([10, 10]);
@@ -35,7 +31,6 @@ Kd = diag([10, 10]);
 global tau_record t_record
 tau_record = [];
 t_record = [];
-
 %% ---------------- 生成期望末端轨迹和关节角 ----------------
 w = pi / 2;
 t1 = 2;
@@ -71,29 +66,15 @@ end
 
 qd_fun = @(t) [interp1(tspan, qd_traj(1, :), t); interp1(tspan, qd_traj(2, :), t)];
 qd_dot_fun = @(t) [interp1(tspan, qd_dot_traj(1, :), t); interp1(tspan, qd_dot_traj(2, :), t)];
-
 %% ---------------- 求解 ODE ----------------
 [t, z] = ode45(@(t, z) rhs_planar_PD(t, z, m1, m2, model.L1, model.L2, g, ...
     qd_fun, qd_dot_fun, Kp, Kd), ...
     tspan, z0);
-
 %% ---------------- 末端位置计算 ----------------
 x1 = l1 * cos(z(:, 1));
 y1 = l1 * sin(z(:, 1));
 x2 = x1 + l2 * cos(z(:, 1)+z(:, 3));
 y2 = y1 + l2 * sin(z(:, 1)+z(:, 3));
-
-%% 关节力矩曲线
-figure('Color','w');
-plot(t_record, tau_record(1,:), 'r', 'LineWidth', 1.5);
-hold on;
-plot(t_record, tau_record(2,:), 'b', 'LineWidth', 1.5);
-xlabel('Time [s]');
-ylabel('Torque [N·m]');
-legend('\tau_1','\tau_2');
-grid on;
-title('Actual Joint Torques During Integration');
-
 %% ---------------- 绘制动画 ----------------
 all_x = [x1; x2];
 all_y = [y1; y2];
@@ -122,6 +103,7 @@ video = VideoWriter('two_link_PD.mp4', 'MPEG-4');
 video.FrameRate = fs;
 open(video);
 
+
 tic
 for i = 1:length(t)
     set(h_link1, 'XData', [0, x1(i)], 'YData', [0, y1(i)]);
@@ -138,8 +120,18 @@ for i = 1:length(t)
     writeVideo(video, frame);
 end
 close(video);
+%% 关节力矩曲线
+utils.createFigureA4();
+utils.setDefaultGraphics;
 
-
+plot(t_record, tau_record(1, :), 'r', 'LineWidth', 1.5);
+hold on;
+plot(t_record, tau_record(2, :), 'b', 'LineWidth', 1.5);
+xlabel('Time (s)');
+ylabel('Torque (N·m)');
+legend('$\tau_1$', '$\tau_2$');
+grid on;
+title('Actual Joint Torques');
 %% ---------------- 支持函数 ----------------
 function [q1, q2] = inverse_kinematics(x, y, model)
 L1 = model.L1;
