@@ -8,7 +8,7 @@
 ]{geometry}
 \usepackage{titlesec}
 
-% 修改 \section 字号为 14pt，加粗
+% 调整 \section 标题字号与间距
 \titleformat{\section}
   {\normalfont\bfseries\large} % 样式：\Large 可改为 \huge, \small 等
   {\thesection}{0em}{}         % 编号和间距设置
@@ -28,11 +28,11 @@
 
 \begin{center}
     \begin{tikzpicture}[scale=2, >=stealth]
-        % ---------- 坐标系 ----------
+        % 坐标系
         \draw[->] (-0.5,0) -- (3,0) node[right] {$x$};
         \draw[->] (0,-0.5) -- (0,2) node[above] {$y$};
 
-        % ---------- 参数 ----------
+        % 参数
         \def\lone{1.5}    % l1
         \def\ltwo{1.2}    % l2
         \def\aone{0.75}   % a1
@@ -41,7 +41,7 @@
         \def\thtwo{30}    % θ2
         \def\ext{0.6}    % 引出线长度
 
-        % ---------- 关键点 ----------
+        % 关键点
         \coordinate (O) at (0,0);
         \coordinate (J1) at ({\lone*cos(\thone)}, {\lone*sin(\thone)});
         \coordinate (J2) at ({\lone*cos(\thone) + \ltwo*cos(\thone+\thtwo)},
@@ -51,20 +51,20 @@
         \coordinate (C2) at ({\lone*cos(\thone) + \atwo*cos(\thone+\thtwo)},
         {\lone*sin(\thone) + \atwo*sin(\thone+\thtwo)});
 
-        % ---------- 绘制连杆 ----------
+        % 绘制连杆
         \draw[thick] (O) -- (J1);
         \draw[thick] (J1) -- (J2);
 
-        % ---------- 绘制关节 ----------
+        % 绘制关节
         \filldraw[black] (O) circle (1.5pt);
         \filldraw[black] (J1) circle (1.5pt);
         \filldraw[black] (J2) circle (1.5pt);
 
-        % ---------- 绘制质心 ----------
+        % 绘制质心
         \filldraw[red] (C1) circle (1.2pt);
         \filldraw[red] (C2) circle (1.2pt);
 
-        % ---------- l1, a1 ----------
+        % 标注 l1 与 a1
         \draw[]
         (O) -- ++({-\ext*sin(\thone)}, {\ext*cos(\thone)})
         coordinate (Oline);
@@ -79,7 +79,7 @@
         \draw[<->, red] ($(O)!0.4!(Oline)$) -- ($(C1)!0.8!(C1line)$)
         node[pos=0.8, left, xshift=-0.05cm] {$a_1$};
 
-        % ------------ l2, a2 -----------
+        % 标注 l2 与 a2
         \draw[]
         (J1) -- ++({-\ext*sin(\thone+\thtwo)}, {\ext*cos(\thone+\thtwo)})
         coordinate (J1line);

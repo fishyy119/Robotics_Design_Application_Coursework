@@ -2,18 +2,19 @@ clearvars;
 close all;
 clc;
 
-%% Path setup
+%% 路径设置
 this_dir = fileparts(mfilename('fullpath'));
 matlab_root = fileparts(this_dir);
 addpath(this_dir);
 addpath(matlab_root);
 
+% 若缺少自动生成文件，则先执行符号推导脚本。
 if exist(fullfile(this_dir, 'rhs_planar_contact.m'), 'file') ~= 2 || ...
         exist(fullfile(this_dir, 'energy_planar_contact.m'), 'file') ~= 2
     derive_planar_contact();
 end
 
-%% Model parameters
+%% 模型参数
 m1 = 1.0;
 m2 = 0.8;
 l1 = 1.0;
@@ -24,30 +25,29 @@ J1 = (1 / 12) * m1 * l1^2;
 J2 = (1 / 12) * m2 * l2^2;
 g = 9.81;
 
-%% Ground-contact parameters
+%% 地面接触参数
 ground_y = -0.85;
 k_ground = 1500;
 c_ground = 35;
 
-%% Initial state
+%% 初始状态
 q1 = pi / 2 - 0.25;
 u1 = 0;
 q2 = -pi / 6;
 u2 = 0;
 z0 = [q1; u1; q2; u2];
 
-%% Simulation settings
+%% 仿真设置
 T = 6;
 fs = 200;
 tspan = linspace(0, T, T * fs + 1);
 options = odeset('RelTol', 1e-8, 'AbsTol', 1e-9, 'MaxStep', 1 / fs);
 
-%% Dynamics simulation
+%% 动力学仿真
 [t, z] = ode45(@(t, z) rhs_planar_contact(t, z, m1, m2, l1, l2, a1, a2, J1, J2, g, ...
-    ground_y, k_ground, c_ground), ...
-    tspan, z0, options);
+    ground_y, k_ground, c_ground), tspan, z0, options);
 
-%% Kinematics post-processing
+%% 运动学后处理
 q1 = z(:, 1);
 u1 = z(:, 2);
 q2 = z(:, 3);
@@ -58,7 +58,7 @@ y1 = l1 * sin(q1);
 x2 = x1 + l2 * cos(q1 + q2);
 y2 = y1 + l2 * sin(q1 + q2);
 
-%% Energy diagnostics
+%% 能量诊断
 n = numel(t);
 KE = zeros(n, 1);
 PEg = zeros(n, 1);
@@ -80,7 +80,7 @@ E_diss = cumtrapz(t, Pdamp);
 E_balance = E_mech + PEc + E_diss;
 E_balance_drift = E_balance - E_balance(1);
 
-%% Diagnostic plots
+%% 诊断绘图
 utils.setDefaultGraphics;
 utils.createFigureA4(struct('Name', 'Planar Contact Diagnostics', 'Width', 18, 'AspectRatio', 0.9));
 tiledlayout(2, 2, 'TileSpacing', 'compact', 'Padding', 'compact');
@@ -125,7 +125,7 @@ xlabel('Time (s)');
 ylabel('Energy Drift (J)');
 title('Energy Balance Drift');
 
-%% Animation
+%% 动画
 all_x = [0; x1; x2];
 all_y = [ground_y; y1; y2];
 x_margin = 0.1 * (max(all_x(:)) - min(all_x(:)) + eps);
@@ -154,6 +154,7 @@ for idx = 1:frame_stride:n
     set(h_link2, 'XData', [x1(idx), x2(idx)], 'YData', [y1(idx), y2(idx)]);
     set(h_tip, 'XData', x2(idx), 'YData', y2(idx));
 
+    % 触地时用红色标记末端。
     if penetration(idx) > 0
         set(h_tip, 'Color', [0.85, 0.2, 0.2], 'MarkerFaceColor', [0.85, 0.2, 0.2]);
     else

@@ -1,5 +1,4 @@
-%% setDefaultGraphics.m
-% 设置全局图形默认属性
+% 设置全局图形默认属性。
 
 set(groot, ...
     'DefaultAxesFontName', 'Times New Roman', ...
