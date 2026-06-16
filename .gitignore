@@ -1,15 +1,2 @@
-# Matlab
-
-*.asv
-slprj
-*.slxc
-*.autosave
-
-# LaTeX
-
-build/
-
-# Others
-
 *.mp4
 *.avi

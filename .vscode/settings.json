@@ -8,6 +8,7 @@
         "**/build/*.blg": true,
         "**/build/*.fdb_latexmk": true,
         "**/build/*.fls": true,
+        "**/__pycache__": true,
     },
     "editor.wordWrap": "on",
     "editor.formatOnSave": true,
@@ -84,4 +85,5 @@
     "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
     "latex-workshop.view.pdf.viewer": "tab",
     "latex-workshop.view.pdf.ref.viewer": "auto",
+    "python.analysis.typeCheckingMode": "strict",
 }

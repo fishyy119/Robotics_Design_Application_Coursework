@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hw24-ppo"
+version = "0.1.0"
+description = "Homework 24 PPO project for Gymnasium LunarLander-v3."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "gymnasium[box2d]>=1.1,<2.0",
+    "imageio>=2.37,<3.0",
+    "imageio-ffmpeg>=0.6,<1.0",
+    "jaxtyping>=0.2.36,<1.0",
+    "matplotlib>=3.9,<4.0",
+    "numpy>=1.26,<3.0",
+    "tensorboard>=2.18,<3.0",
+    "torch>=2.4,<3.0",
+]
+
+[project.optional-dependencies]
+dev = ["pyright>=1.1.390,<2.0"]
+
+[tool.setuptools.packages.find]
+include = ["hw24_ppo*"]
+
+[tool.pyright]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+include = ["hw24_ppo"]
+reportMissingTypeStubs = "none"
